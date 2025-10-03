@@ -1,10 +1,29 @@
+/**
+ * 文件：app/src/main/java/kittoku/osc/preference/constant.kt
+ * 作用说明：
+ * 本文件用于定义项目中所有偏好设置项（OscPrefKey 枚举）及其默认值（布尔型、整型、字符串、集合、Uri），
+ * 主要为 SharedPreferences 的初始化和访问提供统一的键值和默认值映射。
+ * 主要功能：
+ * - OscPrefKey：枚举所有配置项的键名，供偏好设置相关模块统一引用。
+ * - DEFAULT_BOOLEAN_MAP/DEFAULT_INT_MAP/DEFAULT_STRING_MAP/DEFAULT_SET_MAP/DEFAULT_URI_MAP：定义各类型配置项的默认值，便于初始化和重置。
+ * - AUTH_PROTOCOL 常量：定义支持的认证协议名称。
+ * - TEMP_KEY_HEADER/PROFILE_KEY_HEADER：定义临时和配置文件相关的键名前缀。
+ * 在本项目中，偏好设置相关模块（如 accessor 工具、各类 Preference 控件、配置校验 check.kt、应用管理 app.kt 等）会调用本文件的枚举和默认值映射，
+ * 以实现配置项的统一管理和访问。
+ * 本文件不直接调用其他文件，但依赖 kittoku.osc 包下的 DEFAULT_MRU、DEFAULT_MTU 常量。
+ * 依赖 Android SDK 的 Uri 类型。
+ */
+
 package kittoku.osc.preference
 
 import android.net.Uri
 import kittoku.osc.DEFAULT_MRU
 import kittoku.osc.DEFAULT_MTU
 
-
+/**
+ * OscPrefKey
+ * 枚举所有偏好设置项的键名，供 SharedPreferences 及各类控件统一引用。
+ */
 internal enum class OscPrefKey {
     ROOT_STATE,
     HOME_HOSTNAME,
@@ -51,7 +70,10 @@ internal enum class OscPrefKey {
     LOG_DIR,
 }
 
-
+/**
+ * DEFAULT_BOOLEAN_MAP
+ * 定义所有布尔型配置项的默认值。
+ */
 internal val DEFAULT_BOOLEAN_MAP = mapOf(
     OscPrefKey.ROOT_STATE to false,
     OscPrefKey.HOME_CONNECTOR to false,
@@ -73,6 +95,10 @@ internal val DEFAULT_BOOLEAN_MAP = mapOf(
     OscPrefKey.LOG_DO_SAVE_LOG to false
 )
 
+/**
+ * DEFAULT_INT_MAP
+ * 定义所有整型配置项的默认值。
+ */
 internal val DEFAULT_INT_MAP = mapOf(
     OscPrefKey.SSL_PORT to 443,
     OscPrefKey.PROXY_PORT to 8080,
@@ -86,6 +112,10 @@ internal val DEFAULT_INT_MAP = mapOf(
 
 private const val EMPTY_TEXT = ""
 
+/**
+ * DEFAULT_STRING_MAP
+ * 定义所有字符串型配置项的默认值。
+ */
 internal val DEFAULT_STRING_MAP = mapOf(
     OscPrefKey.HOME_HOSTNAME to EMPTY_TEXT,
     OscPrefKey.HOME_USERNAME to EMPTY_TEXT,
@@ -103,21 +133,34 @@ internal val DEFAULT_STRING_MAP = mapOf(
 
 private val EMPTY_SET = setOf<String>()
 
+/**
+ * 认证协议常量
+ */
 internal val AUTH_PROTOCOl_PAP = "PAP"
 internal val AUTH_PROTOCOL_MSCHAPv2 = "MSCHAPv2"
 internal val AUTH_PROTOCOL_EAP_MSCHAPv2 = "EAP-MSCHAPv2"
 
+/**
+ * DEFAULT_SET_MAP
+ * 定义所有集合型配置项的默认值。
+ */
 internal val DEFAULT_SET_MAP = mapOf(
     OscPrefKey.SSL_SUITES to EMPTY_SET,
     OscPrefKey.PPP_AUTH_PROTOCOLS to setOf(AUTH_PROTOCOl_PAP, AUTH_PROTOCOL_MSCHAPv2),
     OscPrefKey.ROUTE_ALLOWED_APPS to EMPTY_SET,
 )
 
+/**
+ * DEFAULT_URI_MAP
+ * 定义所有 Uri 类型配置项的默认值。
+ */
 internal val DEFAULT_URI_MAP = mapOf<OscPrefKey, Uri?>(
     OscPrefKey.SSL_CERT_DIR to null,
     OscPrefKey.LOG_DIR to null,
 )
 
-
+/**
+ * 临时和配置文件相关的键名前缀
+ */
 internal const val TEMP_KEY_HEADER = "_"
 internal const val PROFILE_KEY_HEADER = "PROFILE."

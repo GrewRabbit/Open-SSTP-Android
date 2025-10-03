@@ -1,8 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+文件：app/src/main/res/values/colors.xml
+作用说明：
+本文件定义了应用的全局颜色资源，包括主色调、辅助色、基础色（黑/白）等，统一管理界面配色方案，便于维护和风格调整。
+主要功能：
+- 提供主题、控件、布局等所需的颜色资源，提升界面一致性和可维护性。
+在本项目中，所有主题样式文件（如 themes.xml、themes-night.xml）、布局 XML、控件样式、Activity/Fragment 相关代码会通过 @color 引用本文件中的颜色资源，实现界面渲染和风格统一。
+本文件不会主动调用其它文件，但会被主题、布局、样式及相关 Java/Kotlin 代码依赖和引用，用于界面配色。
+-->
+
 <resources>
+    <!-- 主色调（深绿色） -->
     <color name="teal_700">#FF00796B</color>
+    <!-- 主色调（高亮绿色，夜间模式用） -->
     <color name="teal_A700">#00BFA5</color>
+    <!-- 辅助色（深橙色） -->
     <color name="deep_orange_700">#FFE64A19</color>
+    <!-- 基础色：黑色 -->
     <color name="black">#FF000000</color>
+    <!-- 基础色：白色 -->
     <color name="white">#FFFFFFFF</color>
 </resources>

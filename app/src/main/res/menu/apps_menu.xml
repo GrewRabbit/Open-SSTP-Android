@@ -1,9 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+文件：app/src/main/res/menu/apps_menu.xml
+作用说明：
+本文件定义了应用菜单资源，包含“允许全部”和“不允许全部”两个菜单项，主要用于界面上的批量操作菜单。
+主要功能：
+- 提供批量允许/禁止操作的菜单选项，便于用户快速管理应用权限或状态。
+在本项目中，相关 Activity 或 Fragment（如管理应用的界面）会通过 MenuInflater 加载本文件，作为菜单资源。
+本文件不会主动调用其它文件，但会被 Activity/Fragment 的 onCreateOptionsMenu 或 onOptionsItemSelected 方法依赖和引用，用于菜单渲染和事件处理。
+-->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 菜单项：允许全部 -->
     <item
         android:id="@+id/allow_all"
         android:title="Allow all"/>
 
+    <!-- 菜单项：不允许全部 -->
     <item
         android:id="@+id/disallow_all"
         android:title="Disallow all" />

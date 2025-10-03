@@ -1,3 +1,13 @@
+/**
+ * 文件：app/src/main/java/kittoku/osc/io/incoming/IncomingManager.kt
+ * 作用说明：
+ * 本文件定义了 IncomingManager 类，负责管理 VPN 数据通道的入站数据处理，包括 SSTP 和 PPP 协议的数据包解析、心跳检测、各协议客户端的邮箱注册与注销等。
+ * 主要功能包括：启动主入站协程，解析和分发收到的数据包，维护心跳定时器，管理各协议客户端的消息通道。
+ * 在本软件项目中，VPN 会话管理模块会调用该文件，用于实现数据通道的入站数据处理和协议分发。
+ * 本文件会调用 EchoTimer（心跳检测）、各 PPP/SSTP 客户端（如 LCPClient、PAPClient 等）、SharedBridge（会话桥接）、ControlMessage（控制消息）等模块。
+ * 本文件依赖标准库 ByteBuffer、kotlinx.coroutines 及项目内协议相关单元和扩展方法。
+ */
+
 package kittoku.osc.io.incoming
 
 import kittoku.osc.ControlMessage
@@ -43,15 +53,21 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 
+private const val SSTP_ECHO_INTERVAL = 20_000L // SSTP 心跳检测间隔
+private const val PPP_ECHO_INTERVAL = 20_000L // PPP 心跳检测间隔
 
-private const val SSTP_ECHO_INTERVAL = 20_000L
-private const val PPP_ECHO_INTERVAL = 20_000L
-
+/**
+ * 入站数据管理器，负责解析和分发 VPN 入站数据包，维护心跳定时器及各协议邮箱
+ * @param bridge 会话桥接对象，提供数据通道和控制通道
+ */
 internal class IncomingManager(internal val bridge: SharedBridge) {
-    private val bufferSize = bridge.sslTerminal!!.getApplicationBufferSize() + MAX_MRU + 8 // MAX_MRU + 8 for fragment
+    // 缓冲区大小，包含 SSL 应用缓冲区、最大 MRU 及碎片冗余
+    private val bufferSize = bridge.sslTerminal!!.getApplicationBufferSize() + MAX_MRU + 8
 
+    // 主入站协程任务
     private var jobMain: Job? = null
 
+    // 各协议客户端的消息通道（邮箱）
     internal var lcpMailbox: Channel<LCPConfigureFrame>? = null
     internal var papMailbox: Channel<PAPFrame>? = null
     internal var chapMailbox: Channel<ChapFrame>? = null
@@ -61,12 +77,14 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
     internal var pppMailbox: Channel<Frame>? = null
     internal var sstpMailbox: Channel<ControlPacket>? = null
 
+    // SSTP 心跳定时器
     private val sstpTimer = EchoTimer(SSTP_ECHO_INTERVAL) {
         SstpEchoRequest().also {
             bridge.sslTerminal!!.send(it.toByteBuffer())
         }
     }
 
+    // PPP 心跳定时器
     private val pppTimer = EchoTimer(PPP_ECHO_INTERVAL) {
         LCPEchoRequest().also {
             it.id = bridge.allocateNewFrameID()
@@ -75,6 +93,10 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
         }
     }
 
+    /**
+     * 注册协议客户端的邮箱，便于数据分发
+     * @param client 协议客户端对象
+     */
     internal fun <T> registerMailbox(client: T) {
         when (client) {
             is LCPClient -> lcpMailbox = client.mailbox
@@ -89,6 +111,10 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
         }
     }
 
+    /**
+     * 注销协议客户端的邮箱，断开数据分发
+     * @param client 协议客户端对象
+     */
     internal fun <T> unregisterMailbox(client: T) {
         when (client) {
             is LCPClient -> lcpMailbox = null
@@ -103,6 +129,9 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
         }
     }
 
+    /**
+     * 启动主入站数据处理协程，负责接收、解析和分发数据包，并进行心跳检测
+     */
     internal fun launchJobMain() {
         jobMain = bridge.service.scope.launch(bridge.handler) {
             val buffer = ByteBuffer.allocate(bufferSize).also { it.limit(0) }
@@ -111,32 +140,30 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
             pppTimer.tick()
 
             while (isActive) {
+                // 检查 SSTP 心跳
                 if (!sstpTimer.checkAlive()) {
                     bridge.controlMailbox.send(
                         ControlMessage(Where.SSTP_CONTROL, Result.ERR_TIMEOUT)
                     )
-
                     return@launch
                 }
 
+                // 检查 PPP 心跳
                 if (!pppTimer.checkAlive()) {
                     bridge.controlMailbox.send(
                         ControlMessage(Where.PPP, Result.ERR_TIMEOUT)
                     )
-
                     return@launch
                 }
 
-
+                // 获取数据包长度
                 val size = getPacketSize(buffer)
                 when (size) {
-                    in 4..bufferSize -> { }
-
+                    in 4..bufferSize -> { /* 合法包，继续处理 */ }
                     -1 -> {
                         bridge.sslTerminal!!.receive(buffer)
                         continue
                     }
-
                     else -> {
                         bridge.controlMailbox.send(
                             ControlMessage(Where.INCOMING, Result.ERR_INVALID_PACKET_SIZE)
@@ -145,6 +172,7 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
                     }
                 }
 
+                // 检查缓冲区剩余空间
                 if (size > buffer.remaining()) {
                     bridge.sslTerminal!!.receive(buffer)
                     continue
@@ -152,6 +180,7 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
 
                 sstpTimer.tick()
 
+                // 根据包类型分发处理
                 when (buffer.probeShort(0)) {
                     SSTP_PACKET_TYPE_DATA -> {
                         if (buffer.probeShort(4) != PPP_HDLC_HEADER) {
@@ -165,20 +194,17 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
 
                         val protocol = buffer.probeShort(6)
 
-
-                        // DATA
+                        // DATA 包处理
                         if (protocol == PPP_PROTOCOL_IP) {
                             processIPPacket(bridge.PPP_IPv4_ENABLED, size, buffer)
                             continue
                         }
-
                         if (protocol == PPP_PROTOCOL_IPv6) {
                             processIPPacket(bridge.PPP_IPv6_ENABLED, size, buffer)
                             continue
                         }
-                        
 
-                        // CONTROL
+                        // CONTROL 包处理
                         val code = buffer.probeByte(8)
                         val isGo = when (protocol) {
                             PPP_PROTOCOL_LCP -> processLcpFrame(code, buffer)
@@ -205,7 +231,6 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
                         bridge.controlMailbox.send(
                             ControlMessage(Where.INCOMING, Result.ERR_UNKNOWN_TYPE)
                         )
-
                         return@launch
                     }
                 }
@@ -213,6 +238,11 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
         }
     }
 
+    /**
+     * 获取当前缓冲区中的数据包长度
+     * @param buffer 数据缓冲区
+     * @return 包长度，-1 表示数据不足
+     */
     private fun getPacketSize(buffer: ByteBuffer): Int {
         return if (buffer.remaining() < 4) {
             -1
@@ -221,6 +251,9 @@ internal class IncomingManager(internal val bridge: SharedBridge) {
         }
     }
 
+    /**
+     * 取消主入站数据处理协程
+     */
     internal fun cancel() {
         jobMain?.cancel()
     }

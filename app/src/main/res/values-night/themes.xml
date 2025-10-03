@@ -1,16 +1,26 @@
+<!--
+文件：app/src/main/res/values-night/themes.xml
+作用说明：
+本文件定义了应用在夜间模式下的主题样式资源，主要用于适配暗色界面，提升夜间使用体验。
+主要功能：
+- 设定夜间模式下的主色调、次色调、状态栏颜色等，保证界面风格与夜间视觉需求一致。
+在本项目中，所有 Activity、Fragment 及布局 XML 会通过 android:theme 或 style 属性引用本文件中的主题资源，实现夜间模式的界面渲染和样式切换。
+本文件不会主动调用其它文件，但会被布局文件、AndroidManifest.xml 及相关 Java/Kotlin 代码依赖和引用，用于夜间主题渲染和切换。
+-->
+
 <resources>
-    <!-- Base application theme. -->
+    <!-- 应用夜间模式主题，继承自 MaterialComponents 日夜模式，带暗色 ActionBar -->
     <style name="Theme.OpenSSTPClient" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
+        <!-- 主色调（夜间模式） -->
         <item name="colorPrimary">@color/teal_A700</item>
         <item name="colorPrimaryVariant">@color/teal_A700</item>
         <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
+        <!-- 次色调（夜间模式） -->
         <item name="colorSecondary">@color/deep_orange_700</item>
         <item name="colorSecondaryVariant">@color/deep_orange_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
+        <!-- 状态栏颜色（夜间模式） -->
         <item name="android:statusBarColor">@color/teal_A700</item>
-        <!-- Customize your theme here. -->
+        <!-- 可在此自定义更多夜间主题属性 -->
     </style>
 </resources>

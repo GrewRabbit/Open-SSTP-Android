@@ -1,6 +1,14 @@
+<!--
+文件：app/src/main/res/values-w820dp/dimens.xml
+作用说明：
+本文件用于定义在宽度大于 820dp 的设备（如 7寸、10寸平板横屏）下的界面尺寸资源，主要是对 res/values/dimens.xml 中尺寸的定制和覆盖，实现多屏适配。
+主要功能：
+- 针对大屏设备，调整 activity 的水平边距（如 activity_horizontal_margin），提升界面布局的美观和可用性。
+在本项目中，所有引用 @dimen/activity_horizontal_margin 的布局 XML、样式 XML 及相关 Java/Kotlin 代码，会在大屏设备下自动调用本文件中的尺寸资源，实现自适应。
+本文件不会主动调用其它文件，但会被布局文件和相关代码依赖和引用，用于界面渲染和适配。
+-->
+
 <resources>
-    <!-- Example customization of dimensions originally defined in res/values/dimens.xml
-         (such as screen margins) for screens with more than 820dp of available width. This
-         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively). -->
+    <!-- 针对宽度大于 820dp 的设备，activity 水平边距设为 64dp -->
     <dimen name="activity_horizontal_margin">64dp</dimen>
 </resources>

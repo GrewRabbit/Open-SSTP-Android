@@ -1,9 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+文件：app/src/main/res/layout/activity_blank.xml
+作用说明：
+本文件定义了一个名为“activity_blank”的界面布局，采用垂直线性布局，内部包含一个 FrameLayout 占位容器。
+主要功能：
+- 作为空白或占位 Activity 的界面基础结构，便于后续动态添加或替换内容。
+- FrameLayout（id: blank）用于承载动态加载的 Fragment、View 或其它界面元素。
+在本项目中，BlankActivity（或相关 Java/Kotlin Activity 类）会通过 setContentView 调用本文件，作为其界面布局。
+本文件不会主动调用其它文件，但会被 Activity 类依赖和引用，用于界面渲染。
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- FrameLayout 占位容器，供 Activity 或 Fragment 动态添加内容 -->
     <FrameLayout
         android:id="@+id/blank"
         android:layout_width="match_parent"

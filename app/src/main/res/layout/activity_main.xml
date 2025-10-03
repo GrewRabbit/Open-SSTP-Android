@@ -1,14 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+文件：app/src/main/res/layout/activity_main.xml
+作用说明：
+本文件定义了主界面（MainActivity）的布局结构，采用垂直线性布局，包含顶部 TabLayout 和内容区 ViewPager2。
+主要功能：
+- TabLayout（id: tabBar）：用于展示和切换不同的标签页，提升界面导航体验。
+- ViewPager2（id: pager）：用于承载和滑动不同的 Fragment 或页面内容，与 TabLayout 联动。
+在本项目中，MainActivity（Kotlin/Java 类）通过 setContentView 调用本文件，作为主界面布局。
+本文件不会主动调用其它文件，但会被 MainActivity 依赖和引用，用于界面渲染和交互。
+-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- TabLayout：顶部标签栏，负责标签切换 -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <!-- ViewPager2：内容区，负责页面滑动和承载 Fragment -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"

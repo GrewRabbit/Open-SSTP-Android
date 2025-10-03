@@ -1,9 +1,23 @@
+<!--
+文件：app/src/main/res/drawable-v24/ic_launcher_foreground.xml
+作用说明：
+本文件定义了应用启动器图标的前景矢量资源，主要用于 Android 应用桌面图标的前景图形展示。
+主要功能：
+- 通过 path 元素和渐变填充，绘制应用图标的主要视觉内容，提升品牌辨识度。
+- 适配高分辨率设备（v24），保证图标在不同设备上的清晰度和一致性。
+在本项目中，AndroidManifest.xml 及相关资源配置会引用本文件，用于设置应用的启动器图标前景。
+本文件不会主动调用其它文件，但会被系统和布局资源依赖和调用。
+-->
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:aapt="http://schemas.android.com/aapt"
         android:width="108dp"
         android:height="108dp"
         android:viewportHeight="108"
         android:viewportWidth="108">
+    <!--
+    第一条 path：绘制图标底部阴影，使用线性渐变填充，增强立体感。
+    -->
     <path
             android:fillType="evenOdd"
             android:pathData="M32,64C32,64 38.39,52.99 44.13,50.95C51.37,48.37 70.14,49.57 70.14,49.57L108.26,87.69L108,109.01L75.97,107.97L32,64Z"
@@ -25,6 +39,9 @@
             </gradient>
         </aapt:attr>
     </path>
+    <!--
+    第二条 path：绘制图标主体内容（如图案、符号），采用白色填充，突出前景视觉。
+    -->
     <path
             android:fillColor="#FFFFFF"
             android:fillType="nonZero"

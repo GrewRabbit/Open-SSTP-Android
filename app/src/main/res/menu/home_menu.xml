@@ -1,13 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+文件：app/src/main/res/menu/home_menu.xml
+作用说明：
+本文件定义了主界面（Home）相关的菜单资源，包含“加载配置”、“保存配置”、“恢复默认”三个菜单项，主要用于配置文件的管理操作。
+主要功能：
+- 提供加载、保存和恢复默认配置的菜单选项，方便用户管理应用的个性化设置。
+在本项目中，HomeActivity 或相关 Fragment 会通过 MenuInflater 加载本文件，作为主界面菜单资源。
+本文件不会主动调用其它文件，但会被 Activity/Fragment 的 onCreateOptionsMenu 或 onOptionsItemSelected 方法依赖和引用，用于菜单渲染和事件处理。
+-->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 菜单项：加载配置文件 -->
     <item
         android:id="@+id/load_profile"
         android:title="Load Profile"/>
 
+    <!-- 菜单项：保存当前配置 -->
     <item
         android:id="@+id/save_profile"
         android:title="Save Profile" />
 
+    <!-- 菜单项：恢复默认配置 -->
     <item
         android:id="@+id/reload_defaults"
         android:title="Reload Defaults" />

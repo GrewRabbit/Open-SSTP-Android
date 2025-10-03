@@ -1,8 +1,22 @@
+<!--
+文件：app/src/main/res/values/dimens.xml
+作用说明：
+本文件定义了全局界面尺寸资源（dimen），如边距、间距等，统一管理应用界面布局的尺寸规范，便于维护和适配不同屏幕。
+主要功能：
+- 提供 activity、appbar、FAB 等常用控件的边距和间距尺寸，提升界面一致性和可维护性。
+在本项目中，所有布局文件（如 layout 目录下的 XML）、控件样式、Activity/Fragment 相关代码会通过 @dimen 引用本文件中的尺寸资源，实现界面布局和样式的统一。
+本文件不会主动调用其它文件，但会被布局 XML、样式 XML 及相关 Java/Kotlin 代码依赖和引用，用于界面渲染。
+-->
+
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!-- Activity 水平边距，遵循 Android 设计规范 -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
+    <!-- Activity 垂直边距，遵循 Android 设计规范 -->
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- AppBar 内部通用边距 -->
     <dimen name="appbar_padding">16dp</dimen>
+    <!-- FloatingActionButton 外部边距 -->
     <dimen name="fab_margin">16dp</dimen>
+    <!-- AppBar 顶部额外边距 -->
     <dimen name="appbar_padding_top">8dp</dimen>
 </resources>
